@@ -52,12 +52,10 @@ class Table implements Container
 
             # Check if this is a referencing column
             if (strpos ($row["COLUMN_KEY"], 'MUL') !== false)
-            {
-                # Retrieve details
-                $details = QueryHelper::exec_query(QueryHelper::get_fk_details($col->name, $this->name, $this->database), $this->connection) [0];
+            # Retrieve details
+            if (!empty ($details = QueryHelper::exec_query(QueryHelper::get_fk_details($col->name, $this->name, $this->database), $this->connection)))
                 # Reconstruct the column
-                $col = new ReferenceColumn($col, $details['REF_TABLE'], $details['REF_COLUMN']);
-            }
+                $col = new ReferenceColumn($col, $details[0]['REF_TABLE'], $details[0]['REF_COLUMN']);
 
             $this->columns[] = $col;
         }
